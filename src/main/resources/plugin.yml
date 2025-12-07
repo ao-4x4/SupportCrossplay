@@ -1,0 +1,43 @@
+name: SupportCrossplay
+version: '2.0.0'
+main: jp.reitou_mugicha.supportCrossplay.SupportCrossplay
+api-version: '1.21'
+
+commands:
+  #shop:
+    #aliases:
+      #- s
+    #description: ショップの管理をします。
+    #permission: supportcrossplay.command.shop
+    #permission-message: §cこのコマンドを使用する権限がありません。
+    #default: true
+  currentposition:
+    aliases: ["cp", "currentpos", "cposition", "cpos"]
+    description: 現在位置を発言します。
+    permission: supportcrossplay.command.currentposition
+    permission-message: §cこのコマンドを使用する権限がありません。
+    default: true
+  scspawn:
+    aliases: [ "scspawn", "supportcrossplayspawn", "scs" ]
+    description: SupportCrossplayのMOBを召喚します。
+    permission: supportcrossplay.command.scspawn
+    permission-message: §cこのコマンドを使用する権限がありません。
+    default: true
+  scitems:
+    aliases: ["scitems", "scitem", "supportscrossplayitems", "sci"]
+    description: SupportCrossplayのアイテム一覧を表示します。
+    permission: supportcrossplay.command.scitems
+    permission-message: §cこのコマンドを使用する権限がありません。
+    default: op
+  tradecontrol:
+    aliases: ["tc"]
+    description: Control Villager trade
+    permission: supportcrossplay.command.tradecontrol
+    permission-message: §cこのコマンドを使用する権限がありません。
+    default: op
+  supportcrossplay:
+    aliases: ["sc", "spcp"]
+    description: Generald command of Support Crossplay
+    permission: supportcrossplay.command.supportcorssplay
+    permission-message: §cこのコマンドを使用する権限がありません。
+    default: op
