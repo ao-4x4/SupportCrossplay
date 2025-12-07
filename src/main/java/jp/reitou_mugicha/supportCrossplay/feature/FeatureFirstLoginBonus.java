@@ -19,6 +19,7 @@ public class FeatureFirstLoginBonus implements Listener
             player.getInventory().addItem(ItemStarterPack.getItem());
             player.sendMessage(ChatColor.GREEN + "初回ログインボーナスでスターターパックを受け取りました！");
             PlayerData.config.set(player.getUniqueId() + ".gotFirstLoginBonus", true);
+            PlayerData.saveConfig();
         }
     }
 }
