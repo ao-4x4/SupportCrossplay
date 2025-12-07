@@ -47,7 +47,7 @@ public class FeatureAdvancedAnvil implements Listener
         Player player = event.getPlayer();
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && Objects.requireNonNull(event.getClickedBlock()).getType() == Material.ANVIL && player.isSneaking())
         {
-            if (player.getInventory().getItemInMainHand().getType() == Material.SHEARS) return;
+            if (player.getInventory().getItemInMainHand().getType() == Material.AIR) return;
 
             openCustomGUI(player);
             event.setCancelled(true);
