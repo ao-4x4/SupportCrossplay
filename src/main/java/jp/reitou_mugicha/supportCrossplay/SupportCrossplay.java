@@ -60,6 +60,7 @@ public final class SupportCrossplay extends JavaPlugin
         registerEvent(new ItemStoneCutterOnAStick());
         registerEvent(new ItemSmithingTableOnAStick());
         registerEvent(new ItemEnchantShard());
+        registerEvent(new ItemStarterPack());
 
         // Blocks
         registerEvent(new BlockHomeBlock());
@@ -76,6 +77,7 @@ public final class SupportCrossplay extends JavaPlugin
         registerEvent(new FeatureDisableEmerald());
         registerEvent(new FeaturePiglinBarter());
         registerEvent(new FeatureRandomRollEnchant());
+        registerEvent(new FeatureFirstLoginBonus());
     }
 
     private void initCommands()
