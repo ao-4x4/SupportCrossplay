@@ -4,13 +4,6 @@ main: jp.reitou_mugicha.supportCrossplay.SupportCrossplay
 api-version: '1.21'
 
 commands:
-  #shop:
-    #aliases:
-      #- s
-    #description: ショップの管理をします。
-    #permission: supportcrossplay.command.shop
-    #permission-message: §cこのコマンドを使用する権限がありません。
-    #default: true
   currentposition:
     aliases: ["cp", "currentpos", "cposition", "cpos"]
     description: 現在位置を発言します。
