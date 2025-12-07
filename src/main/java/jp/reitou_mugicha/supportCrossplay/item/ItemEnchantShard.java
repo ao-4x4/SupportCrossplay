@@ -107,7 +107,7 @@ public class ItemEnchantShard implements Listener
                 return;
         }
 
-        if (Helpers.probability(3))
+        if (Helpers.probability(6))
         {
             World world = event.getEntity().getWorld();
             world.dropItemNaturally(event.getEntity().getLocation(), getItem()).setGlowing(true);
