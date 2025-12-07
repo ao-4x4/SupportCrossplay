@@ -62,6 +62,7 @@ public final class SupportCrossplay extends JavaPlugin
         registerEvent(new ItemEnchantShard());
         registerEvent(new ItemStarterPack());
         registerEvent(new ItemShikattoStick());
+        registerEvent(new ItemVillagerMeat());
 
         // Blocks
         registerEvent(new BlockHomeBlock());
