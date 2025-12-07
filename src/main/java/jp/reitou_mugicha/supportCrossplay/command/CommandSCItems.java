@@ -44,12 +44,7 @@ public class CommandSCItems implements CommandExecutor, Listener
 
         Inventory gui = Bukkit.createInventory(null, SlotSize, TITLE);
 
-        for (ItemStack item : SupportCrossplay.getCustomItems())
-        {
-            gui.addItem(item);
-        }
-
-        gui.setItem(30, ItemShikattoStick.getItem());
+        for (ItemStack item : SupportCrossplay.getCustomItems()) gui.addItem(item);
 
         player.openInventory(gui);
 

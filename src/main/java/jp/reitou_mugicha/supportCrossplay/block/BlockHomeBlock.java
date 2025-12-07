@@ -50,7 +50,6 @@ public class BlockHomeBlock implements Listener
         Block = block.clone();
 
         SupportCrossplay.addItem(block);
-        registerRecipe();
     }
 
     public static ItemStack getItem()

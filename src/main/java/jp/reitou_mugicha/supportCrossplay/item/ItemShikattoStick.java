@@ -5,18 +5,20 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
-public class ItemShikattoStick
+public class ItemShikattoStick implements Listener
 {
     private static final ItemStack Item;
     private static final NamespacedKey recipeKey = new NamespacedKey(SupportCrossplay.getInstance(), "shikatto_stick");
 
-    static {
+    static
+    {
         ItemStack item = new ItemStack(Material.BLAZE_ROD);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("しかっと棒");
@@ -26,7 +28,6 @@ public class ItemShikattoStick
         Item = item.clone();
 
         SupportCrossplay.addItem(item);
-        registerRecipe();
     }
 
     public static ItemStack getItem()

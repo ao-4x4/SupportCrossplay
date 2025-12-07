@@ -38,7 +38,6 @@ public class ItemBedrockDestroyer implements Listener
         Item = item.clone();
 
         SupportCrossplay.addItem(item);
-        registerRecipe();
     }
 
     public static ItemStack getItem()
