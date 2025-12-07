@@ -1,5 +1,6 @@
 package jp.reitou_mugicha.supportCrossplay.command;
 
+import jp.reitou_mugicha.supportCrossplay.SupportCrossplay;
 import jp.reitou_mugicha.supportCrossplay.data.GeneralConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -20,7 +21,7 @@ public class CommandSupportCrossplay implements CommandExecutor, TabCompleter
     {
         if (args.length == 0)
         {
-            sender.sendMessage(ChatColor.GOLD + "======== Support Crossplay ========\n" + ChatColor.GREEN + "Author: " + ChatColor.RED + "reitou_mugicha\n" + ChatColor.GREEN + "Version: " + ChatColor.RED + "2.0.0\n" + ChatColor.GOLD + "====================");
+            sender.sendMessage(ChatColor.GOLD + "======== Support Crossplay ========\n" + ChatColor.GREEN + "Author: " + ChatColor.RED + "reitou_mugicha\n" + ChatColor.GREEN + "Version: " + ChatColor.RED + SupportCrossplay.getInstance().getDescription().getVersion() + "\n" + ChatColor.GOLD + "=======================");
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("economy"))

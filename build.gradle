@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'jp.reitou_mugicha'
-version = '2.0.0'
+version = '2.1.0'
 
 repositories {
     mavenCentral()
@@ -71,5 +71,11 @@ processResources {
     filteringCharset 'UTF-8'
     filesMatching('plugin.yml') {
         expand props
+    }
+}
+
+processResources {
+    filesMatching("plugin.yml") {
+        expand(version: project.version)
     }
 }
