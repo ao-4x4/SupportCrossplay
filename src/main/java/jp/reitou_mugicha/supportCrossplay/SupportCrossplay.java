@@ -71,25 +71,30 @@ public final class SupportCrossplay extends JavaPlugin
 
     private void initFeatures()
     {
+        // Feature Register
         registerEvent(new FeatureAdvancedAnvil());
         registerEvent(new FeatureBulkTrading());
         registerEvent(new FeatureExperienceTrading());
-        registerEvent(new CommandSCItems());
         registerEvent(new FeatureReapJobs());
         registerEvent(new FeatureDisableEmerald());
         registerEvent(new FeaturePiglinBarter());
         registerEvent(new FeatureRandomRollEnchant());
         registerEvent(new FeatureFirstLoginBonus());
+        registerEvent(new FeatureRepairAnvil());
     }
 
     private void initCommands()
     {
+        // Command Register
         this.getCommand("scspawn").setExecutor(new CommandSCSpawn());
         this.getCommand("scspawn").setTabCompleter(new CommandSCSpawn());
         this.getCommand("currentposition").setExecutor(new CommandCurrentPosition());
         this.getCommand("scitems").setExecutor(new CommandSCItems());
         this.getCommand("supportcrossplay").setExecutor(new CommandSupportCrossplay());
         this.getCommand("supportcrossplay").setTabCompleter(new CommandSupportCrossplay());
+
+        // GUI Register
+        registerEvent(new CommandSCItems());
     }
 
     private void initPlugin()
