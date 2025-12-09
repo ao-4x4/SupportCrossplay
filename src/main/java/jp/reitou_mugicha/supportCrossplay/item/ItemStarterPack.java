@@ -47,7 +47,7 @@ public class ItemStarterPack implements Listener
     }
     public static boolean is(ItemStack item)
     {
-        if (item == null) return false;
+        if (item == null || item.getType() == Material.AIR || item.getAmount() <= 0) return false;
         NBTItem nbtItem = new NBTItem(item);
         return nbtItem.hasKey(SupportCrossplay.KEY) && nbtItem.getString(SupportCrossplay.KEY).equals(ITEM_TAG);
     }
