@@ -2,11 +2,7 @@ package jp.reitou_mugicha.supportCrossplay.feature;
 
 import jp.reitou_mugicha.supportCrossplay.SupportCrossplay;
 import jp.reitou_mugicha.supportCrossplay.item.ItemEnchantShard;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.block.BlockType;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,25 +10,26 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class FeatureRandomRollEnchant implements Listener
-{
+public class FeatureRandomRollEnchant implements Listener {
+
     private final String ROLL_MENU_TITLE = "エンチャントガチャ";
     private final int ROLL_COST = 3;
 
     private final int ROLL_BUTTON_INDEX = 13;
 
     private final List<Enchantment> ENCHANT_POOL = new ArrayList<>();
+    private final Set<UUID> rollingPlayers = new HashSet<>();
 
     public FeatureRandomRollEnchant()
     {
@@ -42,12 +39,11 @@ public class FeatureRandomRollEnchant implements Listener
     private void initEnchantPool()
     {
         Enchantment[] all = Enchantment.values();
-        for (Enchantment enchantment : all) {
+        for (Enchantment enchantment : all)
+        {
             if (enchantment == null) continue;
-
             int max = enchantment.getMaxLevel();
-            if (max <= 0) continue;
-            ENCHANT_POOL.add(enchantment);
+            if (max > 0) ENCHANT_POOL.add(enchantment);
         }
     }
 
@@ -56,17 +52,18 @@ public class FeatureRandomRollEnchant implements Listener
     {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (event.getHand() != EquipmentSlot.HAND) return;
+        if (event.getClickedBlock() == null) return;
 
         if (event.getClickedBlock().getType() == Material.ENCHANTING_TABLE)
         {
             Player player = event.getPlayer();
             ItemStack mainHand = player.getInventory().getItemInMainHand();
+
             if (ItemEnchantShard.is(mainHand))
             {
                 if (ENCHANT_POOL.isEmpty())
                 {
                     player.sendMessage(ChatColor.RED + "登録済みエンチャントが存在しません！");
-                    player.closeInventory();
                     return;
                 }
                 openRollMenu(player);
@@ -79,33 +76,127 @@ public class FeatureRandomRollEnchant implements Listener
     {
         if (event.getClickedInventory() == null) return;
         if (!event.getView().getTitle().equals(ROLL_MENU_TITLE)) return;
+
         event.setCancelled(true);
+
         if (event.getRawSlot() != ROLL_BUTTON_INDEX) return;
 
-        Player player = (Player)event.getWhoClicked();
+        Player player = (Player) event.getWhoClicked();
         ItemStack mainHand = player.getInventory().getItemInMainHand();
+
+        if (rollingPlayers.contains(player.getUniqueId()))
+        {
+            player.sendMessage(ChatColor.RED + "現在ルーレット中です！");
+            return;
+        }
+
         if (ItemEnchantShard.is(mainHand) && mainHand.getAmount() >= ROLL_COST)
         {
-            Roll(player);
+            rollingPlayers.add(player.getUniqueId());
+            startRouletteAnimation(player);
         }
         else
         {
-            player.sendMessage(ChatColor.RED + "抽選を回すには最低でも" + ROLL_COST + "個のエンチャントの欠片が必要です！");
+            player.sendMessage(ChatColor.RED + "抽選には " + ROLL_COST + " 個の欠片が必要です！");
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
         }
     }
 
-    private void Roll(Player player)
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event)
     {
+        Player player = event.getPlayer();
+        UUID id = player.getUniqueId();
+
+        if (rollingPlayers.contains(id))
+        {
+            finishRouletteOffline(player);
+            rollingPlayers.remove(id);
+        }
+    }
+
+    private void startRouletteAnimation(Player player)
+    {
+        player.closeInventory();
+
         ItemStack mainHand = player.getInventory().getItemInMainHand();
         mainHand.setAmount(mainHand.getAmount() - ROLL_COST);
 
+        int totalTicks = 120;
+        int intervalStart = 2;
+        int intervalEnd = 12;
+
+        final int[] ticks = {0};
+        final int[] counter = {0};
+
+        final BukkitTask[] holder = new BukkitTask[1];
+
+        holder[0] = Bukkit.getScheduler().runTaskTimer(SupportCrossplay.getInstance(), () -> {
+
+            BukkitTask task = holder[0];
+
+            if (!player.isOnline())
+            {
+                task.cancel();
+                finishRouletteOffline(player);
+                rollingPlayers.remove(player.getUniqueId());
+                return;
+            }
+
+            int interval = intervalStart + (intervalEnd - intervalStart) * ticks[0] / totalTicks;
+
+            if (counter[0] % interval == 0)
+            {
+                Enchantment ench = ENCHANT_POOL.get(SupportCrossplay.random.nextInt(ENCHANT_POOL.size()));
+                player.sendTitle(ChatColor.AQUA + "" + ChatColor.BOLD + ench.getKey().getKey().toUpperCase(),
+                        ChatColor.WHITE + "ルーレット中...", 0, interval + 20, 0);
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1);
+            }
+
+            ticks[0]++;
+            counter[0]++;
+
+            if (ticks[0] >= totalTicks)
+            {
+                task.cancel();
+                finishRoulette(player);
+                rollingPlayers.remove(player.getUniqueId());
+            }
+
+        }, 0L, 1L);
+    }
+
+    private void finishRoulette(Player player)
+    {
         ItemStack book = rollRandomEnchantBook();
         player.getInventory().addItem(book);
 
-        player.sendMessage(ChatColor.GREEN + "エンチャントを獲得しました！\n結果: " + book.getItemMeta().getDisplayName());
-        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-        player.closeInventory();
+        if (player.isOnline())
+        {
+            player.sendTitle(
+                    ChatColor.GOLD + "" + ChatColor.BOLD + "結果！",
+                    book.getItemMeta().getDisplayName(),
+                    10, 40, 10
+            );
+
+            player.getWorld().spawnParticle(
+                    Particle.EXPLOSION,
+                    player.getLocation().add(0, 1, 0),
+                    80, 0.5, 0.5, 0.5, 0.2
+            );
+
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+        }
+
+        player.sendMessage(ChatColor.GREEN + "エンチャントを獲得しました！ → " + book.getItemMeta().getDisplayName());
+    }
+
+    private void finishRouletteOffline(Player player)
+    {
+        ItemStack book = rollRandomEnchantBook();
+        player.getInventory().addItem(book);
+
+        player.sendMessage(ChatColor.GREEN + "ログアウト時にエンチャント結果を付与しました → " + book.getItemMeta().getDisplayName());
     }
 
     private ItemStack rollRandomEnchantBook()
@@ -133,26 +224,23 @@ public class FeatureRandomRollEnchant implements Listener
     {
         Inventory gui = Bukkit.createInventory(null, 9 * 3, ROLL_MENU_TITLE);
 
-        // Roll Button
-        ItemStack rollButton = ItemStack.of(Material.LIME_STAINED_GLASS);
+        ItemStack rollButton = new ItemStack(Material.LIME_STAINED_GLASS);
         ItemMeta rollMeta = rollButton.getItemMeta();
         rollMeta.setDisplayName(ChatColor.RED + "抽選する");
-        rollMeta.setLore(List.of(ChatColor.YELLOW + "エンチャントの欠片 " + ROLL_COST + " 個で" + ChatColor.YELLOW + "ランダムなエンチャント本が手に入ります。"));
+        rollMeta.setLore(List.of(ChatColor.YELLOW + "エンチャントの欠片 " + ROLL_COST + " 個でランダムな本が手に入ります。"));
         rollMeta.addEnchant(Enchantment.UNBREAKING, 1, true);
         rollMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         rollButton.setItemMeta(rollMeta);
         gui.setItem(ROLL_BUTTON_INDEX, rollButton);
 
-        // Blank
-        ItemStack blank = ItemStack.of(Material.GRAY_STAINED_GLASS_PANE);
+        ItemStack blank = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta blankMeta = blank.getItemMeta();
         blankMeta.setDisplayName(" ");
         blank.setItemMeta(blankMeta);
 
         for (int i = 0; i < 9 * 3; i++)
         {
-            ItemStack item = gui.getItem(i);
-            if (item == null || item.getType() == Material.AIR)
+            if (gui.getItem(i) == null || gui.getItem(i).getType() == Material.AIR)
             {
                 gui.setItem(i, blank);
             }
