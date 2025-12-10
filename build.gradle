@@ -44,9 +44,7 @@ dependencies {
     compileOnly('io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT')
     compileOnly('org.geysermc.floodgate:api:2.2.4-SNAPSHOT')
     compileOnly('org.geysermc.geyser:api:2.9.0-SNAPSHOT')
-    compileOnly("com.github.MilkBowl:VaultAPI:1.7")
     compileOnly("de.tr7zw:item-nbt-api-plugin:2.15.3")
-    compileOnly("com.github.retrooper:packetevents-spigot:2.10.1")
     compileOnly files("H:/MinecraftPlugins/.BuiltServer/paper-1.21.8.jar")
 }
 

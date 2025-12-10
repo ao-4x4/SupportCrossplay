@@ -1,16 +1,12 @@
 package jp.reitou_mugicha.supportCrossplay;
 
-import com.github.retrooper.packetevents.PacketEvents;
-import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import jp.reitou_mugicha.supportCrossplay.block.BlockCompressor;
 import jp.reitou_mugicha.supportCrossplay.block.BlockHomeBlock;
 import jp.reitou_mugicha.supportCrossplay.command.CommandCurrentPosition;
 import jp.reitou_mugicha.supportCrossplay.command.CommandSCItems;
 import jp.reitou_mugicha.supportCrossplay.command.CommandSCSpawn;
-//import jp.reitou_mugicha.supportCrossplay.command.CommandShop;
 import jp.reitou_mugicha.supportCrossplay.command.CommandSupportCrossplay;
 import jp.reitou_mugicha.supportCrossplay.feature.*;
-//import jp.reitou_mugicha.supportCrossplay.feature.FeatureShop;
 import jp.reitou_mugicha.supportCrossplay.item.*;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
@@ -34,25 +30,16 @@ public final class SupportCrossplay extends JavaPlugin
     }
 
     @Override
-    public void onLoad()
-    {
-        PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
-        PacketEvents.getAPI().load();
-    }
-
-    @Override
     public void onEnable()
     {
         getLogger().info("Support Crossplay has been enabled!");
         initPlugin();
-        PacketEvents.getAPI().init();
     }
 
     @Override
     public void onDisable()
     {
         getLogger().info("SupportCrossplay has been disabled.");
-        PacketEvents.getAPI().terminate();
     }
 
     private void registerEvent(Listener listener)
