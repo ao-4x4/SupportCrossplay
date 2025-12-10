@@ -3,8 +3,8 @@ package jp.reitou_mugicha.supportCrossplay.block;
 import de.tr7zw.nbtapi.NBTBlock;
 import de.tr7zw.nbtapi.NBTItem;
 import jp.reitou_mugicha.supportCrossplay.SupportCrossplay;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -50,6 +50,18 @@ public class BlockCompressor implements Listener
     {
         return Block.clone();
     }
+    public static boolean is(ItemStack item)
+    {
+        if (item == null || item.getType() == Material.AIR || item.isEmpty()) return false;
+        NBTItem nbtItem = new NBTItem(item);
+        return nbtItem.getString(SupportCrossplay.KEY).equals(BLOCK_TAG);
+    }
+    public static boolean is(Block block)
+    {
+        if (block == null || block.getType() == Material.AIR || block.isEmpty()) return false;
+        NBTBlock blockNBT = new NBTBlock(block);
+        return blockNBT.getData().getString(SupportCrossplay.KEY).equals(BLOCK_TAG);
+    }
 
     public static void registerRecipe()
     {
@@ -67,17 +79,11 @@ public class BlockCompressor implements Listener
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event)
     {
-        ItemStack handItem = event.getItemInHand();
-        NBTItem nbtItem = new NBTItem(handItem);
-
-        if (!nbtItem.hasKey(SupportCrossplay.KEY) || !nbtItem.getString(SupportCrossplay.KEY).equals(BLOCK_TAG)) return;
+        if (!is(event.getItemInHand())) return;
 
         Block block = event.getBlockPlaced();
-        if (block.getType() == Material.IRON_BLOCK)
-        {
-            NBTBlock nbtBlock = new NBTBlock(block);
-            nbtBlock.getData().setBoolean(BLOCK_TAG, true);
-        }
+        NBTBlock nbtBlock = new NBTBlock(block);
+        nbtBlock.getData().setString(SupportCrossplay.KEY, BLOCK_TAG);
     }
 
     @EventHandler
@@ -85,40 +91,35 @@ public class BlockCompressor implements Listener
     {
         if (event.getClickedBlock() == null || event.getHand() != EquipmentSlot.HAND) return;
         Block block = event.getClickedBlock();
-        NBTBlock nbtBlock = new NBTBlock(block);
-        if (nbtBlock.getData().getBoolean(BLOCK_TAG))
-        {
-            Player player = event.getPlayer();
-            player.sendMessage(Component.text("圧縮機"));
-        }
+        if (!is(block)) return;
+
+        Player player = event.getPlayer();
+        player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "圧縮機");
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event)
     {
-        Block block = event.getBlock();
-        NBTBlock nbtBlock = new NBTBlock(block);
-        if (!nbtBlock.getData().getBoolean(BLOCK_TAG)) return;
-
-        ItemStack compressor = getItem();
+        if (!is(event.getBlock())) return;
 
         event.setCancelled(true);
+
+        Block block = event.getBlock();
+        ItemStack dropItem = getItem();
+
         block.setType(Material.AIR);
-        block.getWorld().dropItemNaturally(block.getLocation(), compressor);
+        block.getWorld().dropItemNaturally(block.getLocation(), dropItem);
     }
 
     @EventHandler
     public void onInventoryMoveItem(InventoryMoveItemEvent event)
     {
-        Block hopperBlock = event.getDestination().getLocation().getBlock();
-        Block lowerMachine = hopperBlock.getRelative(0, -1, 0);
-        Block lowerHopper = hopperBlock.getRelative(0, -2, 0);
+        Block upperHopper = event.getDestination().getLocation().getBlock();
+        Block lowerMachine = upperHopper.getRelative(0, -1, 0);
+        Block lowerHopper = upperHopper.getRelative(0, -2, 0);
 
-        NBTBlock machineNbt = new NBTBlock(lowerMachine);
-
-        if (machineNbt.getData().getBoolean(BLOCK_TAG) && hopperBlock.getType() == Material.HOPPER) {
-            if (!(hopperBlock.getState() instanceof Container)) return;
-            Container hopperContainer = (Container) hopperBlock.getState();
+        if (is(lowerMachine) && upperHopper.getType() == Material.HOPPER) {
+            if (!(upperHopper.getState() instanceof Container hopperContainer)) return;
 
             if (hopperContainer.getInventory().contains(Material.IRON_INGOT, 8)) {
                 for (ItemStack item : hopperContainer.getInventory().getContents()) {
@@ -130,8 +131,7 @@ public class BlockCompressor implements Listener
                     }
                 }
 
-                if (!(lowerHopper.getState() instanceof Container)) return;
-                Container container = (Container) lowerHopper.getState();
+                if (!(lowerHopper.getState() instanceof Container container)) return;
                 Inventory hopperInventory = container.getInventory();
                 hopperInventory.addItem(new ItemStack(Material.IRON_BLOCK));
             }

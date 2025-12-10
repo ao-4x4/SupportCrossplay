@@ -56,6 +56,18 @@ public class BlockHomeBlock implements Listener
     {
         return Block.clone();
     }
+    public static boolean is(ItemStack item)
+    {
+        if (item == null || item.getType() == Material.AIR || item.isEmpty()) return false;
+        NBTItem nbtItem = new NBTItem(item);
+        return nbtItem.getString(SupportCrossplay.KEY).equals(BLOCK_TAG);
+    }
+    public static boolean is(Block block)
+    {
+        if (block == null || block.getType() == Material.AIR || block.isEmpty()) return false;
+        NBTBlock blockNBT = new NBTBlock(block);
+        return blockNBT.getData().getString(SupportCrossplay.KEY).equals(BLOCK_TAG);
+    }
 
     public static void registerRecipe()
     {
@@ -75,22 +87,18 @@ public class BlockHomeBlock implements Listener
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (item.getType() == Material.AIR) return;
+        if (!is(item)) return;
 
-        NBTItem nbt = new NBTItem(item);
-        if (nbt.hasKey(SupportCrossplay.KEY) && nbt.getString(SupportCrossplay.KEY).equals(BLOCK_TAG))
-        {
-            Block block = event.getBlockPlaced();
+        Block block = event.getBlockPlaced();
 
-            NBTBlock nbtBlock = new NBTBlock(block);
-            nbtBlock.getData().setBoolean(BLOCK_TAG, true);
-            nbtBlock.getData().setString("PlayerUUID", player.getUniqueId().toString());
+        NBTBlock nbtBlock = new NBTBlock(block);
+        nbtBlock.getData().setString(SupportCrossplay.KEY, BLOCK_TAG);
+        nbtBlock.getData().setString("PlayerUUID", player.getUniqueId().toString());
 
-            HomeData.config.set(player.getUniqueId() + ".position", block.getLocation());
-            HomeData.config.set(player.getUniqueId() + ".broken", false);
-            HomeData.saveConfig();
-            player.sendMessage(Component.text("拠点を設定しました。\nX: " + block.getX() + " Y: " + block.getY() + " Z: " + block.getZ()));
-        }
+        HomeData.config.set(player.getUniqueId() + ".position", block.getLocation());
+        HomeData.config.set(player.getUniqueId() + ".broken", false);
+        HomeData.saveConfig();
+        player.sendMessage(Component.text("拠点を設定しました。\nX: " + block.getX() + " Y: " + block.getY() + " Z: " + block.getZ()));
     }
 
     @EventHandler
@@ -98,55 +106,53 @@ public class BlockHomeBlock implements Listener
     {
         Player player = event.getPlayer();
         Block block = event.getBlock();
-        if (block.getType() == Material.AIR) return;
+
+        if (!is(block)) return;
         NBTBlock nbtBlock = new NBTBlock(block);
 
-        if (nbtBlock.getData().getBoolean(BLOCK_TAG))
+        ItemStack result = getItem();
+
+        String ownerUUID = nbtBlock.getData().getString("PlayerUUID");
+        Player owner = Bukkit.getPlayer(UUID.fromString(ownerUUID));;
+        HomeData.config.set(ownerUUID + ".position", null);
+        HomeData.config.set(ownerUUID + ".broken", true);
+        HomeData.saveConfig();
+
+        if (nbtBlock.getData().getString("PlayerUUID").equals(player.getUniqueId().toString()))
         {
-            ItemStack result = getItem();
+            event.setCancelled(true);
+            block.setType(Material.AIR);
 
-            String ownerUUID = nbtBlock.getData().getString("PlayerUUID");
-            Player owner = Bukkit.getPlayer(UUID.fromString(ownerUUID));;
-            HomeData.config.set(ownerUUID + ".position", null);
-            HomeData.config.set(ownerUUID + ".broken", true);
-            HomeData.saveConfig();
+            block.getWorld().dropItemNaturally(block.getLocation(), result);
 
-            if (nbtBlock.getData().getString("PlayerUUID").equals(player.getUniqueId().toString()))
-            {
-                event.setCancelled(true);
-                block.setType(Material.AIR);
-
-                block.getWorld().dropItemNaturally(block.getLocation(), result);
-
-                player.sendMessage(Component.text("拠点の紐づけを解除しました。"));
-            } else {
-                if (owner != null)
-                {
-                    if (owner.isOnline())
-                    {
-                        if (owner.getInventory().firstEmpty() == -1)
-                        {
-                            owner.getWorld().dropItemNaturally(owner.getLocation(), result);
-                        } else {
-                            owner.getInventory().addItem(result);
-                        }
-
-                        event.setCancelled(true);
-                        block.setType(Material.AIR);
-
-                        owner.sendMessage(Component.text("あなたの拠点ブロックが" + player.getName() + "により破壊されました！\n壊された拠点ブロックはあなたのインベントリに追加されます..."));
-                    }
-                    else
-                    {
-                        event.setCancelled(true);
-                        block.setType(Material.AIR);
-                    }
-
-                    player.sendMessage(owner.getName() + "の拠点を破壊しました！");
-                }
-            }
-            nbtBlock.getData().clearNBT();
+            player.sendMessage(Component.text("拠点の紐づけを解除しました。"));
         }
+        else
+        {
+            if (owner != null)
+            {
+                if (owner.isOnline())
+                {
+                    if (owner.getInventory().firstEmpty() == -1)
+                        owner.getWorld().dropItemNaturally(owner.getLocation(), result);
+                    else
+                        owner.getInventory().addItem(result);
+
+                    event.setCancelled(true);
+                    block.setType(Material.AIR);
+
+                    owner.sendMessage(Component.text("あなたの拠点ブロックが" + player.getName() + "により破壊されました！\n壊された拠点ブロックはあなたのインベントリに追加されます..."));
+                }
+                else
+                {
+                    event.setCancelled(true);
+                    block.setType(Material.AIR);
+                }
+
+                player.sendMessage(owner.getName() + "の拠点を破壊しました！");
+            }
+        }
+        nbtBlock.getData().clearNBT();
     }
 
     @EventHandler
@@ -156,20 +162,15 @@ public class BlockHomeBlock implements Listener
         Block block = event.getClickedBlock();
 
         if (event.getHand() != EquipmentSlot.HAND) return;
-        if (block == null || block.getType() == Material.AIR) return;
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if (!is(block)) return;
 
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK)
+        NBTBlock nbtBlock = new NBTBlock(block);
+        if (nbtBlock.getData().hasKey("PlayerUUID"))
         {
-            NBTBlock nbtBlock = new NBTBlock(block);
-            if (nbtBlock.getData().getBoolean(BLOCK_TAG))
-            {
-                if (nbtBlock.getData().hasKey("PlayerUUID"))
-                {
-                    Player owner = Bukkit.getPlayer(UUID.fromString(nbtBlock.getData().getString("PlayerUUID")));
-                    if (owner == null) return;
-                    player.sendMessage(owner.getName() + "の拠点");
-                }
-            }
+            Player owner = Bukkit.getPlayer(UUID.fromString(nbtBlock.getData().getString("PlayerUUID")));
+            if (owner == null) return;
+            player.sendMessage(owner.getName() + "の拠点");
         }
     }
 
@@ -190,7 +191,9 @@ public class BlockHomeBlock implements Listener
             if (player.getInventory().firstEmpty() == -1)
             {
                 player.getWorld().dropItemNaturally(player.getLocation(), result);
-            } else {
+            }
+            else
+            {
                 player.getInventory().addItem(result);
             }
         }
