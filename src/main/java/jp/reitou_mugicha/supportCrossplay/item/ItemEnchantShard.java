@@ -71,7 +71,6 @@ public class ItemEnchantShard implements Listener
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event)
     {
-        // --- 村人司書処理（既存） ---
         if (event.getEntity() instanceof Villager villager)
         {
             if (villager.getProfession() == Villager.Profession.LIBRARIAN)
@@ -107,7 +106,7 @@ public class ItemEnchantShard implements Listener
                 return;
         }
 
-        if (Helpers.probability(6))
+        if (Helpers.probability(13))
         {
             World world = event.getEntity().getWorld();
             world.dropItemNaturally(event.getEntity().getLocation(), getItem()).setGlowing(true);
