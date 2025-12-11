@@ -3,15 +3,11 @@ package jp.reitou_mugicha.supportCrossplay;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import java.util.zip.*;
 
 public class DatapackInstaller
 {
@@ -37,9 +33,25 @@ public class DatapackInstaller
 
         File zipFile = new File(datapacksDir, "SupportCrossplay.zip");
 
-        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile)))
+        try
         {
-            copyFolderFromJarToZip("datapack/", zos);
+            File tempZip = new File(datapacksDir, "SupportCrossplay_temp.zip");
+
+            try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(tempZip)))
+            {
+                copyFolderFromJarToZip("datapack/", zos);
+            }
+
+            if (zipFile.exists())
+            {
+                if (zipEquals(zipFile, tempZip))
+                {
+                    tempZip.delete();
+                    return;
+                }
+            }
+
+            tempZip.renameTo(zipFile);
         }
         catch (Exception e)
         {
@@ -73,6 +85,30 @@ public class DatapackInstaller
 
                 zos.closeEntry();
             }
+        }
+    }
+
+    private boolean zipEquals(File f1, File f2)
+    {
+        try (ZipFile z1 = new ZipFile(f1); ZipFile z2 = new ZipFile(f2))
+        {
+            if (z1.size() != z2.size()) return false;
+
+            Enumeration<? extends ZipEntry> e1 = z1.entries();
+
+            while (e1.hasMoreElements())
+            {
+                ZipEntry entry1 = e1.nextElement();
+                ZipEntry entry2 = z2.getEntry(entry1.getName());
+                if (entry2 == null) return false;
+                if (entry1.getCrc() != entry2.getCrc()) return false;
+            }
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
         }
     }
 }
