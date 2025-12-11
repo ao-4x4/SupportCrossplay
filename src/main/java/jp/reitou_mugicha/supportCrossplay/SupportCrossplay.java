@@ -6,6 +6,7 @@ import jp.reitou_mugicha.supportCrossplay.command.CommandCurrentPosition;
 import jp.reitou_mugicha.supportCrossplay.command.CommandSCItems;
 import jp.reitou_mugicha.supportCrossplay.command.CommandSCSpawn;
 import jp.reitou_mugicha.supportCrossplay.command.CommandSupportCrossplay;
+import jp.reitou_mugicha.supportCrossplay.enchantment.EnchantmentPoisonAspect;
 import jp.reitou_mugicha.supportCrossplay.feature.*;
 import jp.reitou_mugicha.supportCrossplay.item.*;
 import org.bukkit.event.Listener;
@@ -66,6 +67,8 @@ public final class SupportCrossplay extends JavaPlugin
         // Blocks
         registerEvent(new BlockHomeBlock());
         registerEvent(new BlockCompressor());
+
+        registerEvent(new EnchantmentPoisonAspect());
     }
 
     private void initFeatures()
