@@ -21,8 +21,8 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 
-public class FeatureRandomRollEnchant implements Listener {
-
+public class FeatureRandomRollEnchant implements Listener
+{
     private final String ROLL_MENU_TITLE = "エンチャントガチャ";
     private final int ROLL_COST = 3;
 

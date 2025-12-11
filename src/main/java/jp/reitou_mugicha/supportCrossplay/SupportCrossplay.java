@@ -22,13 +22,13 @@ public final class SupportCrossplay extends JavaPlugin
     public static SupportCrossplay Instance;
     private static final List<ItemStack> customItems =  new ArrayList<ItemStack>();
 
-    public static final String KEY = "datapack";
+    public static final String KEY = "SupportCrossplay";
     public static Random random = new Random();
 
     public SupportCrossplay()
     {
         Instance = this;
-        new DatapackInstaller(this).installForAllWorlds();
+        //new DatapackInstaller(this).installForAllWorlds();
     }
 
     @Override
@@ -67,7 +67,10 @@ public final class SupportCrossplay extends JavaPlugin
         // Blocks
         registerEvent(new BlockHomeBlock());
         registerEvent(new BlockCompressor());
+    }
 
+    private void initEnchantment()
+    {
         registerEvent(new EnchantmentPoisonAspect());
     }
 
