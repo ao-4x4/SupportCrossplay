@@ -33,12 +33,16 @@ public class FeatureRepairAnvil implements Listener
         Block block = event.getClickedBlock();
         if (block == null) return;
 
-        Material type = block.getType();
-
-        if (type == Material.CHIPPED_ANVIL || type == Material.DAMAGED_ANVIL)
+        switch (block.getType())
         {
-            block.setType(type == Material.CHIPPED_ANVIL ? Material.ANVIL : Material.CHIPPED_ANVIL, false);
-            consume(player);
+            case CHIPPED_ANVIL:
+                block.setType(Material.ANVIL);
+                consume(player);
+                break;
+            case DAMAGED_ANVIL:
+                block.setType(Material.CHIPPED_ANVIL);
+                consume(player);
+                break;
         }
     }
 
