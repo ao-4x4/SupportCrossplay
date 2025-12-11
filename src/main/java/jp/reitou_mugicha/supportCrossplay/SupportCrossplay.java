@@ -21,12 +21,13 @@ public final class SupportCrossplay extends JavaPlugin
     public static SupportCrossplay Instance;
     private static final List<ItemStack> customItems =  new ArrayList<ItemStack>();
 
-    public static final String KEY = "SupportCrossplay";
+    public static final String KEY = "datapack";
     public static Random random = new Random();
 
     public SupportCrossplay()
     {
         Instance = this;
+        new DatapackInstaller(this).installForAllWorlds();
     }
 
     @Override
