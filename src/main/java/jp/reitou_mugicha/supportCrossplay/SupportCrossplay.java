@@ -74,7 +74,6 @@ public final class SupportCrossplay extends JavaPlugin
         registerEvent(new FeatureBulkTrading());
         registerEvent(new FeatureExperienceTrading());
         registerEvent(new FeatureReapJobs());
-        registerEvent(new FeatureDisableEmerald());
         registerEvent(new FeaturePiglinBarter());
         registerEvent(new FeatureRandomRollEnchant());
         registerEvent(new FeatureFirstLoginBonus());
