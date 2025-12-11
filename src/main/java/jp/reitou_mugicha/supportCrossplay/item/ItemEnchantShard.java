@@ -101,6 +101,15 @@ public class ItemEnchantShard implements Listener
             case WITCH:
             case SPIDER:
             case CAVE_SPIDER:
+            case BLAZE:
+            case WITHER_SKELETON:
+            case PIGLIN:
+            case PIGLIN_BRUTE:
+            case ENDERMAN:
+            case HOGLIN:
+            case ENDER_DRAGON:
+            case WITHER:
+            case SHULKER:
                 break;
             default:
                 return;
