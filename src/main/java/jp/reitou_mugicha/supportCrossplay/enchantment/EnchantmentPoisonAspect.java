@@ -1,5 +1,6 @@
 package jp.reitou_mugicha.supportCrossplay.enchantment;
 
+import jp.reitou_mugicha.supportCrossplay.Helpers;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.Registry;
@@ -15,29 +16,27 @@ import org.bukkit.potion.PotionEffectType;
 
 public class EnchantmentPoisonAspect implements Listener
 {
+    private final String ENCHANT_ID = "poison_aspect";
+
     @EventHandler
-    public void onHitEntity(EntityDamageByEntityEvent e)
+    public void onHitEntity(EntityDamageByEntityEvent event)
     {
-        if (!(e.getDamager() instanceof Player player)) return;
+        if (!(event.getDamager() instanceof Player player)) return;
 
-        var enchants = player.getInventory().getItemInMainHand().getEnchantments();
+        ItemStack mainHand = player.getInventory().getItemInMainHand();
+        if (!Helpers.hasEnchantment(mainHand, ENCHANT_ID)) return;
 
-        for (var entry : enchants.entrySet())
+        if (event.getEntity() instanceof LivingEntity target)
         {
-            Enchantment ench = entry.getKey();
-            int level = entry.getValue();
+            Enchantment enchantment = Helpers.getEnchantment(mainHand, ENCHANT_ID);
+            if (enchantment == null) return;
 
-            if (ench.getKey().getKey().equals("poison_aspect"))
-            {
-                if (e.getEntity() instanceof LivingEntity target)
-                {
-                    target.addPotionEffect(new PotionEffect(
-                            PotionEffectType.POISON,
-                            40 + level * 20,
-                            level - 1
-                    ));
-                }
-            }
+            int level = mainHand.getEnchantmentLevel(enchantment);
+            target.addPotionEffect(new PotionEffect(
+                    PotionEffectType.POISON,
+                    40 + level * 20,
+                    level - 1
+            ));
         }
     }
 }

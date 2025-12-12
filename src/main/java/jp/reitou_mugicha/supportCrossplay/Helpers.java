@@ -3,9 +3,14 @@ package jp.reitou_mugicha.supportCrossplay;
 import de.tr7zw.nbtapi.NBTItem;
 import jp.reitou_mugicha.supportCrossplay.data.GeneralConfig;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.geysermc.floodgate.api.FloodgateApi;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -33,7 +38,6 @@ public class Helpers
                 material == Material.STONE_SWORD || material == Material.WOODEN_SWORD;
     }
 
-
     public static boolean isArmor(ItemStack item)
     {
         if (item == null || item.getType() == Material.AIR) return false;
@@ -49,28 +53,6 @@ public class Helpers
                 material == Material.NETHERITE_BOOTS || material == Material.DIAMOND_BOOTS || material == Material.IRON_BOOTS ||
                 material == Material.GOLDEN_BOOTS || material == Material.CHAINMAIL_BOOTS || material == Material.LEATHER_BOOTS ||
                 material == Material.ELYTRA || material == Material.PLAYER_HEAD;
-    }
-
-    public static boolean isShulkerBox(ItemStack item)
-    {
-        if (item == null || item.getType() == Material.AIR) return false;
-
-        Material material = item.getType();
-
-        return material == Material.SHULKER_BOX || material == Material.WHITE_SHULKER_BOX || material == Material.ORANGE_SHULKER_BOX ||
-                material == Material.MAGENTA_SHULKER_BOX || material == Material.LIGHT_BLUE_SHULKER_BOX || material == Material.YELLOW_SHULKER_BOX ||
-                material == Material.LIME_SHULKER_BOX || material == Material.PINK_SHULKER_BOX || material == Material.GRAY_SHULKER_BOX || material == Material.LIGHT_GRAY_SHULKER_BOX ||
-                material == Material.CYAN_SHULKER_BOX || material == Material.PURPLE_SHULKER_BOX || material == Material.BLUE_SHULKER_BOX || material == Material.BROWN_SHULKER_BOX ||
-                material == Material.GREEN_SHULKER_BOX || material == Material.RED_SHULKER_BOX || material == Material.BLACK_SHULKER_BOX;
-    }
-
-    public static boolean isCustomBlock(ItemStack item, String blockTag)
-    {
-        if (item == null || item.getType() == Material.AIR) return false;
-
-        NBTItem nbt = new NBTItem(item);
-        if (nbt.hasKey("Machine") && nbt.getString("Machine").equals(blockTag)) return true;
-        return false;
     }
 
     public static boolean isHoe(ItemStack item)
@@ -99,6 +81,28 @@ public class Helpers
             throw new IllegalArgumentException("percent must be >= 0 and < 100");
         }
         return ThreadLocalRandom.current().nextDouble(0.0, 100.0) < percent;
+    }
+
+    public static boolean hasEnchantment(ItemStack itemStack, String id)
+    {
+        var enchants = itemStack.getEnchantments();
+        for (var entry : enchants.entrySet())
+        {
+            Enchantment enchantment = entry.getKey();
+            return enchantment.getKey().getKey().equals(id);
+        }
+        return false;
+    }
+
+    public static Enchantment getEnchantment(ItemStack itemStack, String id)
+    {
+        var enchants = itemStack.getEnchantments();
+        for (var entry : enchants.entrySet())
+        {
+            Enchantment enchantment = entry.getKey();
+            if (enchantment.getKey().getKey().equals(id)) return enchantment;
+        }
+        return null;
     }
 
     public static boolean isEconomy()
