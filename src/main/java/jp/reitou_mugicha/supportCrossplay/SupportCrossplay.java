@@ -9,8 +9,10 @@ import jp.reitou_mugicha.supportCrossplay.command.CommandSupportCrossplay;
 import jp.reitou_mugicha.supportCrossplay.enchantment.EnchantmentPoisonAspect;
 import jp.reitou_mugicha.supportCrossplay.feature.*;
 import jp.reitou_mugicha.supportCrossplay.item.*;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -20,10 +22,11 @@ import java.util.Random;
 public final class SupportCrossplay extends JavaPlugin
 {
     public static SupportCrossplay Instance;
-    private static final List<ItemStack> customItems =  new ArrayList<ItemStack>();
-
-    public static final String KEY = "SupportCrossplay";
+    public static Economy economy;
     public static Random random = new Random();
+
+    private static final List<ItemStack> customItems =  new ArrayList<ItemStack>();
+    public static final String KEY = "SupportCrossplay";
 
     public SupportCrossplay()
     {
@@ -34,8 +37,8 @@ public final class SupportCrossplay extends JavaPlugin
     @Override
     public void onEnable()
     {
-        getLogger().info("Support Crossplay has been enabled!");
         initPlugin();
+        getLogger().info("Support Crossplay has been enabled!");
     }
 
     @Override
@@ -47,6 +50,15 @@ public final class SupportCrossplay extends JavaPlugin
     private void registerEvent(Listener listener)
     {
         getServer().getPluginManager().registerEvents(listener, this);
+    }
+
+    private boolean initEconomy()
+    {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) return false;
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) return false;
+        economy = rsp.getProvider();
+        return economy != null;
     }
 
     private void initCustomItems()
@@ -103,9 +115,22 @@ public final class SupportCrossplay extends JavaPlugin
 
     private void initPlugin()
     {
+        if (!initEconomy())
+        {
+            disablePlugin();
+            return;
+        }
+
+        initEconomy();
         initCustomItems();
         initFeatures();
         initCommands();
+    }
+
+    private void disablePlugin()
+    {
+        getServer().getPluginManager().disablePlugin(this);
+        getLogger().warning("Support Crossplay has been disabled due to there is no vault plugin!");
     }
 
     public static SupportCrossplay getInstance()
