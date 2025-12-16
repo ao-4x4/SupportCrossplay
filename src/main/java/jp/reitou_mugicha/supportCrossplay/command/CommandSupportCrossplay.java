@@ -1,10 +1,13 @@
 package jp.reitou_mugicha.supportCrossplay.command;
 
+import jp.reitou_mugicha.supportCrossplay.DatapackInstaller;
 import jp.reitou_mugicha.supportCrossplay.SupportCrossplay;
 import jp.reitou_mugicha.supportCrossplay.data.GeneralConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -39,6 +42,29 @@ public class CommandSupportCrossplay implements CommandExecutor, TabCompleter
             }
             GeneralConfig.saveConfig();
         }
+        else if (args.length <= 2 && args[0].equalsIgnoreCase("install"))
+        {
+            if (args.length == 2)
+            {
+                World world = Bukkit.getWorld(args[1]);
+                if (world == null)
+                {
+                    sender.sendMessage(ChatColor.RED + "ワールドが存在しません。");
+                    return false;
+                }
+
+                new DatapackInstaller(SupportCrossplay.getInstance()).installTo(world.getWorldFolder());
+                sender.sendMessage(ChatColor.GREEN + world.getName() + "にデータパックをインストールしました。\nワールドを再起動することで適用されます。");
+
+                return true;
+            }
+            else if (args.length == 1)
+            {
+                new DatapackInstaller(SupportCrossplay.getInstance()).installForAllWorlds();
+                sender.sendMessage(ChatColor.GREEN + "すべてのワールドにデータパックをインストールしました。\nワールドを再起動することで適用されます。");
+            }
+        }
+
         return true;
     }
 
@@ -47,12 +73,26 @@ public class CommandSupportCrossplay implements CommandExecutor, TabCompleter
     {
         if (args.length == 1)
         {
-            return List.of("economy");
+            return List.of(
+                    "economy",
+                    "install"
+            );
         }
 
-        if (args.length == 2 && args[0].equalsIgnoreCase("economy"))
+        if (args.length == 2)
         {
-            return List.of("on", "off");
+            if (args[0].equalsIgnoreCase("economy"))
+            {
+                return List.of("on", "off");
+            }
+
+            if (args[0].equalsIgnoreCase("install"))
+            {
+                return Bukkit.getWorlds()
+                        .stream()
+                        .map(World::getName)
+                        .toList();
+            }
         }
 
         return List.of();
