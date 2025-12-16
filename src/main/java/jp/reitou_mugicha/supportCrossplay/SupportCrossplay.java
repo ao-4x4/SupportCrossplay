@@ -6,7 +6,7 @@ import jp.reitou_mugicha.supportCrossplay.command.CommandCurrentPosition;
 import jp.reitou_mugicha.supportCrossplay.command.CommandSCItems;
 import jp.reitou_mugicha.supportCrossplay.command.CommandSCSpawn;
 import jp.reitou_mugicha.supportCrossplay.command.CommandSupportCrossplay;
-import jp.reitou_mugicha.supportCrossplay.enchantment.EnchantmentPoisonAspect;
+import jp.reitou_mugicha.supportCrossplay.enchantment.*;
 import jp.reitou_mugicha.supportCrossplay.feature.*;
 import jp.reitou_mugicha.supportCrossplay.item.*;
 import net.milkbowl.vault.economy.Economy;
@@ -84,6 +84,9 @@ public final class SupportCrossplay extends JavaPlugin
     private void initEnchantment()
     {
         registerEvent(new EnchantmentPoisonAspect());
+        registerEvent(new EnchantmentTelepathy());
+        registerEvent(new EnchantmentFireProof());
+        registerEvent(new EnchantmentUnstable());
     }
 
     private void initFeatures()
@@ -125,6 +128,7 @@ public final class SupportCrossplay extends JavaPlugin
         initCustomItems();
         initFeatures();
         initCommands();
+        initEnchantment();
     }
 
     private void disablePlugin()

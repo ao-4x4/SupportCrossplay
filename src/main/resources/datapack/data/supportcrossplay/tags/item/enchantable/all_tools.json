@@ -1,0 +1,10 @@
+{
+  "values": [
+    "#supportcrossplay:enchantable/swords",
+    "#supportcrossplay:enchantable/dig_tools",
+    "minecraft:shears",
+    "minecraft:mace",
+    "minecraft:trident",
+    "minecraft:shield"
+  ]
+}

@@ -1,41 +1,19 @@
 {
-    "description": {"text": "毒属性", "color": "green"},
-
-    "exclusive_set": [
-        "minecraft:fire_aspect"
-    ],
-
-    "supported_items": [
-        "minecraft:wooden_sword",
-        "minecraft:stone_sword",
-        "minecraft:iron_sword",
-        "minecraft:golden_sword",
-        "minecraft:diamond_sword",
-        "minecraft:netherite_sword",
-        "minecraft:wooden_axe",
-        "minecraft:stone_axe",
-        "minecraft:iron_axe",
-        "minecraft:golden_axe",
-        "minecraft:diamond_axe",
-        "minecraft:netherite_axe"
-    ],
-    
-    "weight": 10,
-    "max_level": 2,
-
-    "min_cost": {
-        "base": 5,
-        "per_level_above_first": 7
-    },
-
-    "max_cost": {
-        "base": 20,
-        "per_level_above_first": 10
-    },
-
-    "anvil_cost": 4,
-
-    "slots": [
-        "mainhand"
-    ]
+  "anvil_cost": 4,
+  "description": {"text": "毒属性"},
+  "max_cost": {
+    "base": 20,
+    "per_level_above_first": 10
+  },
+  "max_level": 2,
+  "min_cost": {
+    "base": 5,
+    "per_level_above_first": 7
+  },
+  "slots": [
+    "mainhand"
+  ],
+  "primary_items": "#supportcrossplay:enchantable/swords",
+  "supported_items": "#supportcrossplay:enchantable/attack_tools",
+  "weight": 10
 }

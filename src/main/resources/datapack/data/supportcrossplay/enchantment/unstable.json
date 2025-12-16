@@ -1,0 +1,18 @@
+{
+  "anvil_cost": 7,
+  "description": {"text": "不安定", "color": "red"},
+  "max_cost": {
+    "base": 20,
+    "per_level_above_first": 10
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 15,
+    "per_level_above_first": 7
+  },
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#supportcrossplay:enchantable/all_tools",
+  "weight": 1
+}
