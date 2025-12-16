@@ -115,7 +115,9 @@ public class ItemEnchantShard implements Listener
                 return;
         }
 
-        if (Helpers.probability(13))
+        Player player = event.getEntity().getKiller();
+        ItemStack mainHand = player.getInventory().getItemInMainHand();
+        if (Helpers.probability(13) && !Helpers.hasEnchantment(mainHand, "silk_touch"))
         {
             World world = event.getEntity().getWorld();
             world.dropItemNaturally(event.getEntity().getLocation(), getItem()).setGlowing(true);
