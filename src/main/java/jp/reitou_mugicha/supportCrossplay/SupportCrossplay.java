@@ -25,7 +25,7 @@ public final class SupportCrossplay extends JavaPlugin
     public static Economy economy;
     public static Random random = new Random();
 
-    private static final List<ItemStack> customItems =  new ArrayList<ItemStack>();
+    private static final List<ItemStack> customItems =  new ArrayList<>();
     public static final String KEY = "SupportCrossplay";
 
     public SupportCrossplay()
