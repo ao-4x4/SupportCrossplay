@@ -85,3 +85,30 @@ processResources {
         expand props
     }
 }
+
+tasks.register('buildDatapacks') {
+    group = 'datapack'
+    description = 'Build all datapacks from resources'
+}
+
+file('src/main/resources/datapacks').listFiles()?.findAll { it.isDirectory() }?.each { dir ->
+    tasks.register("buildDatapack_${dir.name}", Zip) {
+        group = 'datapack'
+
+        from(dir) {
+            include '**/*'
+        }
+
+        archiveBaseName.set(dir.name)
+        archiveVersion.set('')
+        archiveClassifier.set('')
+
+        destinationDirectory.set(file("$buildDir/datapacks"))
+
+        into('/')
+    }
+
+    tasks.named('buildDatapacks') {
+        dependsOn "buildDatapack_${dir.name}"
+    }
+}
