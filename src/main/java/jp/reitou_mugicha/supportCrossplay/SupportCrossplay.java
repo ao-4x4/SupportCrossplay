@@ -31,7 +31,7 @@ public final class SupportCrossplay extends JavaPlugin
     public SupportCrossplay()
     {
         Instance = this;
-        new DatapackInstaller(this).installForAllWorlds();
+        new DatapackInstaller(this).installServer();
     }
 
     @Override

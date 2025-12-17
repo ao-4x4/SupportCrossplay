@@ -53,14 +53,14 @@ public class CommandSupportCrossplay implements CommandExecutor, TabCompleter
                     return false;
                 }
 
-                new DatapackInstaller(SupportCrossplay.getInstance()).installTo(world.getWorldFolder());
+                new DatapackInstaller(SupportCrossplay.getInstance()).installWorld(world.getWorldFolder());
                 sender.sendMessage(ChatColor.GREEN + world.getName() + "にデータパックをインストールしました。\nワールドを再起動することで適用されます。");
 
                 return true;
             }
             else if (args.length == 1)
             {
-                new DatapackInstaller(SupportCrossplay.getInstance()).installForAllWorlds();
+                new DatapackInstaller(SupportCrossplay.getInstance()).installServer();
                 sender.sendMessage(ChatColor.GREEN + "すべてのワールドにデータパックをインストールしました。\nワールドを再起動することで適用されます。");
             }
         }

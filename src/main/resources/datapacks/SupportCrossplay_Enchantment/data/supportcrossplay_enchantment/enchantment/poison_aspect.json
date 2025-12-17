@@ -13,7 +13,7 @@
   "slots": [
     "mainhand"
   ],
-  "primary_items": "#supportcrossplay:enchantable/swords",
-  "supported_items": "#supportcrossplay:enchantable/attack_tools",
+  "primary_items": "#supportcrossplay_enchantment:enchantable/swords",
+  "supported_items": "#supportcrossplay_enchantment:enchantable/attack_tools",
   "weight": 10
 }

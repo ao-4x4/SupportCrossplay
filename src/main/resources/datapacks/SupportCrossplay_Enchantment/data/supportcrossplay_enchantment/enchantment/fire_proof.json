@@ -13,6 +13,6 @@
   "slots": [
     "mainhand"
   ],
-  "supported_items": "#supportcrossplay:enchantable/all_tools",
+  "supported_items": "#supportcrossplay_enchantment:enchantable/all_tools",
   "weight": 1
 }

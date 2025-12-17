@@ -22,25 +22,48 @@ public class DatapackInstaller
         this.plugin = plugin;
     }
 
-    public void installForAllWorlds()
+    public void installServer()
     {
         for (World world : Bukkit.getWorlds())
         {
-            installTo(world.getWorldFolder());
+            installWorld(world.getWorldFolder());
         }
         plugin.getLogger().info("The datapack has been installed.");
     }
 
-    public void installTo(File worldFolder)
+    public void installWorld(File worldFolder)
     {
         File datapacksDir = new File(worldFolder, "datapacks");
         if (!datapacksDir.exists()) datapacksDir.mkdirs();
 
-        File zipFile = new File(datapacksDir, "SupportCrossplay.zip");
-
-        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile)))
+        try
         {
-            copyFolderFromJarToZip("datapack/", zos);
+            File jarFile = new File(
+                    getClass().getProtectionDomain().getCodeSource().getLocation().getPath()
+            );
+
+            try (JarFile jar = new JarFile(jarFile))
+            {
+                jar.stream()
+                        .map(JarEntry::getName)
+                        .filter(name -> name.startsWith("datapacks/"))
+                        .map(name -> name.substring("datapacks/".length()))
+                        .filter(name -> name.contains("/"))
+                        .map(name -> name.substring(0, name.indexOf("/")))
+                        .distinct()
+                        .forEach(packName ->
+                        {
+                            File zipFile = new File(datapacksDir, packName + ".zip");
+                            try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile)))
+                            {
+                                copyFolder("datapacks/" + packName + "/", zos);
+                            }
+                            catch (Exception e)
+                            {
+                                e.printStackTrace();
+                            }
+                        });
+            }
         }
         catch (Exception e)
         {
@@ -48,9 +71,11 @@ public class DatapackInstaller
         }
     }
 
-    private void copyFolderFromJarToZip(String rootPath, ZipOutputStream zos) throws IOException
+    private void copyFolder(String rootPath, ZipOutputStream zos) throws IOException
     {
-        File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
+        File jarFile = new File(
+                getClass().getProtectionDomain().getCodeSource().getLocation().getPath()
+        );
 
         try (JarFile jar = new JarFile(jarFile))
         {
@@ -65,13 +90,12 @@ public class DatapackInstaller
                 if (entry.isDirectory()) continue;
 
                 String zipPath = name.substring(rootPath.length());
-                zos.putNextEntry(new ZipEntry(zipPath));
 
+                zos.putNextEntry(new ZipEntry(zipPath));
                 try (InputStream is = jar.getInputStream(entry))
                 {
                     is.transferTo(zos);
                 }
-
                 zos.closeEntry();
             }
         }

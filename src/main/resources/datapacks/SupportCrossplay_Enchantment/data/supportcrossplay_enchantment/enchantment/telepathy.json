@@ -13,7 +13,7 @@
   "slots": [
     "mainhand"
   ],
-  "primary_items": "#supportcrossplay:enchantable/dig_tools",
-  "supported_items": "#supportcrossplay:enchantable/dig_tools",
+  "primary_items": "#supportcrossplay_enchantment:enchantable/dig_tools",
+  "supported_items": "#supportcrossplay_enchantment:enchantable/dig_tools",
   "weight": 1
 }
