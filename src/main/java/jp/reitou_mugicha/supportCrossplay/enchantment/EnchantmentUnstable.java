@@ -1,8 +1,6 @@
 package jp.reitou_mugicha.supportCrossplay.enchantment;
 
-import io.papermc.paper.event.entity.EntityDamageItemEvent;
 import jp.reitou_mugicha.supportCrossplay.Helpers;
-import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
