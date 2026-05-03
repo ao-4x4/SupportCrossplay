@@ -22,6 +22,7 @@ public class CommandSupportCrossplay implements CommandExecutor, TabCompleter
         if (args.length == 0)
         {
             sender.sendMessage(ChatColor.GOLD + "======== Support Crossplay ========\n" + ChatColor.GREEN + "Author: " + ChatColor.RED + "reitou_mugicha\n" + ChatColor.GREEN + "Version: " + ChatColor.RED + SupportCrossplay.getInstance().getDescription().getVersion() + "\n" + ChatColor.GOLD + "=======================");
+            return true;
         }
 
         if (args.length <= 2 && args[0].equalsIgnoreCase("install"))
