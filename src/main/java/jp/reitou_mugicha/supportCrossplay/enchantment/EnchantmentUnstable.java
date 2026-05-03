@@ -23,7 +23,7 @@ public class EnchantmentUnstable implements Listener
         if (itemStack == null) return;
         if (!Helpers.hasEnchantment(itemStack, ENCHANT_ID)) return;
 
-        if (Helpers.probability(5))
+        if (Helpers.probability(20))
         {
             itemStack.setAmount(0);
             player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
