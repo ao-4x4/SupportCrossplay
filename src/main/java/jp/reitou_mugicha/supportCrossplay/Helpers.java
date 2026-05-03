@@ -1,16 +1,10 @@
 package jp.reitou_mugicha.supportCrossplay;
 
-import de.tr7zw.nbtapi.NBTItem;
-import jp.reitou_mugicha.supportCrossplay.data.GeneralConfig;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.geysermc.floodgate.api.FloodgateApi;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -62,18 +56,6 @@ public class Helpers
         return material == Material.WOODEN_HOE || material == Material.IRON_HOE || material == Material.GOLDEN_HOE || material == Material.DIAMOND_HOE || material == Material.NETHERITE_HOE;
     }
 
-    public static boolean isContainShard(Block block)
-    {
-        if (block == null || block.getType() == Material.AIR) return false;
-        Material material = block.getType();
-        return switch (material)
-        {
-            case IRON_ORE, GOLD_ORE, LAPIS_ORE, REDSTONE_ORE, DIAMOND_ORE, EMERALD_ORE, DEEPSLATE_GOLD_ORE, DEEPSLATE_LAPIS_ORE,
-                 DEEPSLATE_REDSTONE_ORE, DEEPSLATE_IRON_ORE, DEEPSLATE_DIAMOND_ORE, DEEPSLATE_EMERALD_ORE, ANCIENT_DEBRIS, NETHER_GOLD_ORE, NETHER_QUARTZ_ORE -> true;
-            default -> false;
-        };
-    }
-
     public static boolean probability(double percent)
     {
         if (percent < 0 || percent >= 100)
@@ -103,10 +85,5 @@ public class Helpers
             if (enchantment.getKey().getKey().equals(id)) return enchantment;
         }
         return null;
-    }
-
-    public static boolean isEconomy()
-    {
-        return GeneralConfig.config.getBoolean("economy");
     }
 }

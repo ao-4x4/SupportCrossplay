@@ -1,7 +1,6 @@
 package jp.reitou_mugicha.supportCrossplay.feature;
 
 import jp.reitou_mugicha.supportCrossplay.Helpers;
-import jp.reitou_mugicha.supportCrossplay.item.ItemEnchantShard;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -172,23 +171,6 @@ public class FeatureAdvancedAnvil implements Listener
         gui.setItem(craftIndex, craftItem);
 
         player.openInventory(gui);
-    }
-
-    public boolean hasAllowedEnchantment(ItemStack item)
-    {
-        EnchantmentStorageMeta storedMeta = (EnchantmentStorageMeta) item.getItemMeta();
-
-        if (storedMeta != null)
-        {
-            for (Enchantment enchantment : storedMeta.getStoredEnchants().keySet())
-            {
-                if (Arrays.asList(allowedEnchantments).contains(enchantment))
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     public Enchantment getAllowedEnchantment(ItemStack item)

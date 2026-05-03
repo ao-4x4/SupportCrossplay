@@ -2,9 +2,6 @@ package jp.reitou_mugicha.supportCrossplay.command;
 
 import jp.reitou_mugicha.supportCrossplay.DatapackInstaller;
 import jp.reitou_mugicha.supportCrossplay.SupportCrossplay;
-import jp.reitou_mugicha.supportCrossplay.data.GeneralConfig;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -27,22 +24,7 @@ public class CommandSupportCrossplay implements CommandExecutor, TabCompleter
             sender.sendMessage(ChatColor.GOLD + "======== Support Crossplay ========\n" + ChatColor.GREEN + "Author: " + ChatColor.RED + "reitou_mugicha\n" + ChatColor.GREEN + "Version: " + ChatColor.RED + SupportCrossplay.getInstance().getDescription().getVersion() + "\n" + ChatColor.GOLD + "=======================");
         }
 
-        if (args.length == 2 && args[0].equalsIgnoreCase("economy"))
-        {
-            switch (args[1])
-            {
-                case "off":
-                    GeneralConfig.config.set("economy", false);
-                    sender.sendMessage(ChatColor.GOLD + "経済用の最適化を " + ChatColor.RED + "オフ" + ChatColor.GOLD + " にしました。");
-                    break;
-                case "on":
-                    GeneralConfig.config.set("economy", true);
-                    sender.sendMessage(ChatColor.GOLD + "経済用の最適化を " + ChatColor.GREEN + "オン" + ChatColor.GOLD + " にしました。");
-                    break;
-            }
-            GeneralConfig.saveConfig();
-        }
-        else if (args.length <= 2 && args[0].equalsIgnoreCase("install"))
+        if (args.length <= 2 && args[0].equalsIgnoreCase("install"))
         {
             if (args.length == 2)
             {
@@ -74,7 +56,6 @@ public class CommandSupportCrossplay implements CommandExecutor, TabCompleter
         if (args.length == 1)
         {
             return List.of(
-                    "economy",
                     "install"
             );
         }

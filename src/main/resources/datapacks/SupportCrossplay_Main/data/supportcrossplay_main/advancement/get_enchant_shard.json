@@ -1,0 +1,34 @@
+{
+  "parent": "supportcrossplay_main:get_enchant_shard",
+  "criteria": {
+    "get_enchant_shard": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["minecraft:amethyst_shard"],
+            "nbt": "{SupportCrossplay:\"enchant_shard\"}"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "text": "エンチャントの欠片を取得する"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:spyglass"
+    },
+    "title": {
+      "text": "エンチャントの欠片！"
+    }
+  },
+  "requirements": [
+    [
+      "get_enchant_shard"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

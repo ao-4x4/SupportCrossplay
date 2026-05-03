@@ -1,7 +1,6 @@
 package jp.reitou_mugicha.supportCrossplay.feature;
 
 import jp.reitou_mugicha.supportCrossplay.SupportCrossplay;
-import jp.reitou_mugicha.supportCrossplay.item.ItemEnchantShard;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -57,9 +56,8 @@ public class FeatureRandomRollEnchant implements Listener
         if (event.getClickedBlock().getType() == Material.ENCHANTING_TABLE)
         {
             Player player = event.getPlayer();
-            ItemStack mainHand = player.getInventory().getItemInMainHand();
 
-            if (ItemEnchantShard.is(mainHand))
+            if (canRouletteStart(player))
             {
                 if (ENCHANT_POOL.isEmpty())
                 {
@@ -82,7 +80,6 @@ public class FeatureRandomRollEnchant implements Listener
         if (event.getRawSlot() != ROLL_BUTTON_INDEX) return;
 
         Player player = (Player) event.getWhoClicked();
-        ItemStack mainHand = player.getInventory().getItemInMainHand();
 
         if (rollingPlayers.contains(player.getUniqueId()))
         {
@@ -90,16 +87,21 @@ public class FeatureRandomRollEnchant implements Listener
             return;
         }
 
-        if (ItemEnchantShard.is(mainHand) && mainHand.getAmount() >= ROLL_COST)
+        if (canRouletteStart(player))
         {
             rollingPlayers.add(player.getUniqueId());
             startRouletteAnimation(player);
         }
         else
         {
-            player.sendMessage(ChatColor.RED + "抽選には " + ROLL_COST + " 個の欠片が必要です！");
+            player.sendMessage(ChatColor.RED + "抽選には " + ROLL_COST + "レベルが必要です！");
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
         }
+    }
+
+    private boolean canRouletteStart(Player player)
+    {
+        return player.getExpToLevel() >= ROLL_COST;
     }
 
     @EventHandler
