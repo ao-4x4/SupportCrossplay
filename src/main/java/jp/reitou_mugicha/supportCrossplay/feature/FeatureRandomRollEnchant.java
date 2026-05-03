@@ -57,15 +57,12 @@ public class FeatureRandomRollEnchant implements Listener
         {
             Player player = event.getPlayer();
 
-            if (canRouletteStart(player))
+            if (ENCHANT_POOL.isEmpty())
             {
-                if (ENCHANT_POOL.isEmpty())
-                {
-                    player.sendMessage(ChatColor.RED + "登録済みエンチャントが存在しません！");
-                    return;
-                }
-                openRollMenu(player);
+                player.sendMessage(ChatColor.RED + "登録済みエンチャントが存在しません！");
+                return;
             }
+            openRollMenu(player);
         }
     }
 
@@ -121,8 +118,7 @@ public class FeatureRandomRollEnchant implements Listener
     {
         player.closeInventory();
 
-        ItemStack mainHand = player.getInventory().getItemInMainHand();
-        mainHand.setAmount(mainHand.getAmount() - ROLL_COST);
+        player.setLevel(player.getLevel() - ROLL_COST);
 
         int totalTicks = 120;
         int intervalStart = 2;
