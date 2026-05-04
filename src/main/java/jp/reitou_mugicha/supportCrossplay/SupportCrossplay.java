@@ -5,7 +5,6 @@ import jp.reitou_mugicha.supportCrossplay.block.BlockHomeBlock;
 import jp.reitou_mugicha.supportCrossplay.command.CommandCurrentPosition;
 import jp.reitou_mugicha.supportCrossplay.command.CommandSCItems;
 import jp.reitou_mugicha.supportCrossplay.command.CommandSupportCrossplay;
-import jp.reitou_mugicha.supportCrossplay.enchantment.*;
 import jp.reitou_mugicha.supportCrossplay.feature.*;
 import jp.reitou_mugicha.supportCrossplay.item.*;
 import org.bukkit.event.Listener;
@@ -61,15 +60,6 @@ public final class SupportCrossplay extends JavaPlugin
         registerEvent(new BlockCompressor());
     }
 
-    private void initEnchantment()
-    {
-        registerEvent(new EnchantmentPoisonAspect());
-        registerEvent(new EnchantmentTelepathy());
-        registerEvent(new EnchantmentFireProof());
-        registerEvent(new EnchantmentUnstable());
-        registerEvent(new EnchantmentSoulbound());
-    }
-
     private void initFeatures()
     {
         // Feature Register
@@ -98,7 +88,6 @@ public final class SupportCrossplay extends JavaPlugin
         initCustomItems();
         initFeatures();
         initCommands();
-        initEnchantment();
     }
 
     public static SupportCrossplay getInstance()
