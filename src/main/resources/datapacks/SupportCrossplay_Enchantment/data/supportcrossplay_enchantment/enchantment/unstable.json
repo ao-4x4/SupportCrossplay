@@ -1,6 +1,6 @@
 {
   "anvil_cost": 7,
-  "description": {"text": "不安定", "color": "red"},
+  "description": {"text": "不安定"},
   "max_cost": {
     "base": 20,
     "per_level_above_first": 10
