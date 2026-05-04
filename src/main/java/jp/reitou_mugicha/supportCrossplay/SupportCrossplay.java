@@ -67,6 +67,7 @@ public final class SupportCrossplay extends JavaPlugin
         registerEvent(new EnchantmentTelepathy());
         registerEvent(new EnchantmentFireProof());
         registerEvent(new EnchantmentUnstable());
+        registerEvent(new EnchantmentSoulbound());
     }
 
     private void initFeatures()
