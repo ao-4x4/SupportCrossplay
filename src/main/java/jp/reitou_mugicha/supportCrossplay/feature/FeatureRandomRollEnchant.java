@@ -57,6 +57,7 @@ public class FeatureRandomRollEnchant implements Listener
         {
             Player player = event.getPlayer();
 
+            if (!player.isSneaking()) return;
             if (ENCHANT_POOL.isEmpty())
             {
                 player.sendMessage(ChatColor.RED + "登録済みエンチャントが存在しません！");
