@@ -1,10 +1,10 @@
 package jp.reitou_mugicha.supportCrossplay;
 
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.util.Collections;
+import java.util.Properties;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -20,14 +20,29 @@ public class DatapackInstaller {
     }
 
     public void installServer() {
-        for (World world : Bukkit.getWorlds()) {
-            installWorld(world.getWorldFolder());
-        }
-    }
+        File serverRoot = Bukkit.getWorldContainer();
+        String levelName = "world";
 
-    public void installWorld(File worldFolder) {
-        File datapacksDir = new File(worldFolder, "datapacks");
-        if (!datapacksDir.exists()) datapacksDir.mkdirs();
+        File propertiesFile = new File(serverRoot, "server.properties");
+        if (propertiesFile.exists()) {
+            try (InputStream is = new FileInputStream(propertiesFile)) {
+                Properties props = new Properties();
+                props.load(is);
+                levelName = props.getProperty("level-name", "world");
+            } catch (IOException e) {
+                plugin.getLogger().warning("Could not read server.properties, using default 'world'");
+            }
+        }
+
+        File mainWorldFolder = new File(serverRoot, levelName);
+        File datapacksDir = new File(mainWorldFolder, "datapacks");
+
+        if (!datapacksDir.exists()) {
+            if (!datapacksDir.mkdirs()) {
+                plugin.getLogger().severe("Failed to create directory: " + datapacksDir.getAbsolutePath());
+                return;
+            }
+        }
 
         try {
             File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
@@ -36,11 +51,16 @@ public class DatapackInstaller {
                 Set<String> packNames = Collections.list(jar.entries()).stream()
                         .map(JarEntry::getName)
                         .filter(name -> name.startsWith("datapacks/") && name.length() > 10)
-                        .map(name -> name.substring(10).split("/")[0])
+                        .map(name -> {
+                            String remaining = name.substring(10);
+                            int slashIndex = remaining.indexOf("/");
+                            return (slashIndex != -1) ? remaining.substring(0, slashIndex) : null;
+                        })
+                        .filter(name -> name != null)
                         .collect(Collectors.toSet());
 
                 if (packNames.isEmpty()) {
-                    plugin.getLogger().warning("Missing datapacks folder in jar.");
+                    plugin.getLogger().warning("No datapacks found in JAR.");
                     return;
                 }
 
@@ -51,27 +71,31 @@ public class DatapackInstaller {
                     try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile))) {
                         String rootPath = "datapacks/" + packName + "/";
 
-                        Collections.list(jar.entries()).forEach(entry -> {
+                        for (JarEntry entry : Collections.list(jar.entries())) {
                             String entryName = entry.getName();
+
                             if (entryName.startsWith(rootPath) && !entry.isDirectory()) {
-                                try {
-                                    String zipPath = entryName.substring(rootPath.length());
-                                    zos.putNextEntry(new ZipEntry(zipPath));
-                                    try (InputStream is = jar.getInputStream(entry)) {
-                                        is.transferTo(zos);
-                                    }
-                                    zos.closeEntry();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
+                                String zipPath = entryName.substring(rootPath.length());
+                                zos.putNextEntry(new ZipEntry(zipPath));
+
+                                try (InputStream is = jar.getInputStream(entry)) {
+                                    is.transferTo(zos);
                                 }
+                                zos.closeEntry();
                             }
-                        });
+                        }
+                    } catch (IOException e) {
+                        plugin.getLogger().severe("Error writing datapack: " + packName);
                     }
                 }
-                plugin.getLogger().info("All datapacks have been installed to: " + worldFolder.getName());
+
+                plugin.getLogger().info("Installation complete at: " + datapacksDir.getAbsolutePath());
+
+            } catch (IOException e) {
+                plugin.getLogger().severe("Failed to read JAR: " + e.getMessage());
             }
-        } catch (URISyntaxException | IOException e) {
-            plugin.getLogger().severe("Failed to install datapacks!");
+        } catch (URISyntaxException e) {
+            plugin.getLogger().severe("Failed to resolve JAR path.");
             e.printStackTrace();
         }
     }

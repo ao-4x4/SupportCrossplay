@@ -25,27 +25,11 @@ public class CommandSupportCrossplay implements CommandExecutor, TabCompleter
             return true;
         }
 
-        if (args.length <= 2 && args[0].equalsIgnoreCase("install"))
+        if (args.length == 1 && args[0].equalsIgnoreCase("install"))
         {
-            if (args.length == 2)
-            {
-                World world = Bukkit.getWorld(args[1]);
-                if (world == null)
-                {
-                    sender.sendMessage(ChatColor.RED + "ワールドが存在しません。");
-                    return false;
-                }
-
-                new DatapackInstaller(SupportCrossplay.getInstance()).installWorld(world.getWorldFolder());
-                sender.sendMessage(ChatColor.GREEN + world.getName() + "にデータパックをインストールしました。\nワールドを再起動することで適用されます。");
-
-                return true;
-            }
-            else if (args.length == 1)
-            {
-                new DatapackInstaller(SupportCrossplay.getInstance()).installServer();
-                sender.sendMessage(ChatColor.GREEN + "すべてのワールドにデータパックをインストールしました。\nワールドを再起動することで適用されます。");
-            }
+            new DatapackInstaller(SupportCrossplay.getInstance()).installServer();
+            sender.sendMessage(ChatColor.GREEN + "データパックをインストールしました。再起動またはリロードを行ってください。");
+            return true;
         }
 
         return true;

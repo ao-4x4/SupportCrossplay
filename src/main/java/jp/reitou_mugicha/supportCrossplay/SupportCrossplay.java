@@ -27,7 +27,6 @@ public final class SupportCrossplay extends JavaPlugin
     public SupportCrossplay()
     {
         Instance = this;
-        new DatapackInstaller(this).installServer();
     }
 
     @Override
@@ -35,6 +34,7 @@ public final class SupportCrossplay extends JavaPlugin
     {
         initPlugin();
         getLogger().info("Support Crossplay has been enabled!");
+        new DatapackInstaller(this).installServer();
     }
 
     @Override
