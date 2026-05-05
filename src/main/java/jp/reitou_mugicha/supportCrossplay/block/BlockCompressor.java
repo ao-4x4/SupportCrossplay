@@ -44,6 +44,7 @@ public class BlockCompressor implements Listener
         Block = block.clone();
 
         SupportCrossplay.addItem(block);
+        registerRecipe();
     }
 
     public static ItemStack getItem()
