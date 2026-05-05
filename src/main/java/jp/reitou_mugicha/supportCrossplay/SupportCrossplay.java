@@ -69,7 +69,7 @@ public final class SupportCrossplay extends JavaPlugin
         registerEvent(new FeatureReapJobs());
         registerEvent(new FeatureRandomRollEnchant());
         registerEvent(new FeatureRepairAnvil());
-        registerEvent(new FeatureRerollMerchant());
+        registerEvent(new FeatureRerollMerchant(this));
     }
 
     private void initCommands()
