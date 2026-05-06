@@ -54,6 +54,7 @@ public final class SupportCrossplay extends JavaPlugin
         registerEvent(new ItemGPSTracker());
         registerEvent(new ItemReturnStick());
         registerEvent(new ItemShikattoStick());
+        registerEvent(new ItemGrapplingHook());
 
         // Blocks
         registerEvent(new BlockHomeBlock());
