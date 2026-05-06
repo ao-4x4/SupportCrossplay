@@ -78,7 +78,7 @@ public class ItemGrapplingHook implements Listener {
         PlayerFishEvent.State state = event.getState();
 
         if (state == PlayerFishEvent.State.FISHING) {
-            hook.setVelocity(hook.getVelocity().multiply(2.5));
+            hook.setVelocity(hook.getVelocity().multiply(1.7));
         } else if (state == PlayerFishEvent.State.REEL_IN || state == PlayerFishEvent.State.IN_GROUND || state == PlayerFishEvent.State.CAUGHT_ENTITY) {
             if (hook.isOnGround() || isTouchingWall(hook)) {
                 pullPlayer(player, hook, item);
@@ -96,7 +96,7 @@ public class ItemGrapplingHook implements Listener {
 
         flyingPlayers.add(player.getUniqueId());
 
-        double multiplier = 3.2;
+        double multiplier = 1.7;
         velocity.normalize().multiply(multiplier);
         velocity.setY(velocity.getY() * 0.6 + 0.8);
 
