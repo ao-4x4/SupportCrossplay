@@ -120,6 +120,11 @@ public class ItemGrapplingHook implements Listener {
     private void damageItem(Player player, ItemStack item) {
         ItemMeta meta = item.getItemMeta();
         if (meta instanceof Damageable damageable) {
+            int unbreakingLevel = item.getEnchantmentLevel(Enchantment.UNBREAKING);
+            if (SupportCrossplay.random.nextInt(unbreakingLevel + 1) > 0) {
+                return;
+            }
+
             int maxDurability = Material.FISHING_ROD.getMaxDurability();
             int damagePerUse = maxDurability / MAX_USES;
             int newDamage = damageable.getDamage() + damagePerUse;
