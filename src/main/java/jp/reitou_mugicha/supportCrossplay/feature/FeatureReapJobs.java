@@ -9,6 +9,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
+import org.bukkit.entity.memory.MemoryKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -31,9 +32,16 @@ public class FeatureReapJobs implements Listener
             Villager villager = (Villager) event.getRightClicked();
             Villager.Profession profession = villager.getProfession();
 
-            if ((profession != Villager.Profession.NONE && profession != Villager.Profession.NITWIT) || (player.getItemInHand().getType() == Material.NETHERITE_HOE && profession == Villager.Profession.NITWIT))
+            if ((profession != Villager.Profession.NITWIT) || (player.getItemInHand().getType() == Material.NETHERITE_HOE && profession == Villager.Profession.NITWIT))
             {
                 villager.setProfession(Villager.Profession.NONE);
+                villager.setVillagerExperience(0);
+                villager.setVillagerLevel(1);
+
+                villager.setMemory(MemoryKey.JOB_SITE, null);
+                villager.setMemory(MemoryKey.HOME, null);
+                villager.setMemory(MemoryKey.POTENTIAL_JOB_SITE, null);
+                villager.setMemory(MemoryKey.MEETING_POINT, null);
 
                 player.sendMessage(ChatColor.GREEN + "対象の村人の職業を消しました!");
                 player.playSound(player.getLocation(), Sound.ENTITY_ARMOR_STAND_HIT, 1f, 1f);
