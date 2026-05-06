@@ -37,7 +37,14 @@ public class FeatureAdvancedAnvil implements Listener
             Enchantment.FIRE_PROTECTION,
             Enchantment.BLAST_PROTECTION,
             Enchantment.PROJECTILE_PROTECTION,
-            Enchantment.THORNS
+            Enchantment.THORNS,
+            Enchantment.FIRE_ASPECT,
+            Enchantment.KNOCKBACK,
+            Enchantment.RESPIRATION,
+            Enchantment.DENSITY,
+            Enchantment.LUNGE,
+            Enchantment.WIND_BURST,
+            Enchantment.DENSITY
     };
 
     @EventHandler
