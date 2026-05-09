@@ -44,6 +44,7 @@ dependencies {
     compileOnly('org.geysermc.floodgate:api:2.2.5-SNAPSHOT')
     compileOnly('org.geysermc.geyser:api:2.9.5-SNAPSHOT')
     compileOnly("de.tr7zw:item-nbt-api-plugin:2.15.7")
+    compileOnly("com.github.retrooper:packetevents-spigot:2.12.1")
     compileOnly files("H:/MinecraftPlugins/.BuiltServer/paper-26.1.2-53.jar")
 }
 
