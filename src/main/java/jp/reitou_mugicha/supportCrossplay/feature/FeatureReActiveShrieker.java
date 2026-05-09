@@ -1,12 +1,11 @@
 package jp.reitou_mugicha.supportCrossplay.feature;
 
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
-import org.bukkit.Particle;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.SculkShrieker;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -27,19 +26,23 @@ public class FeatureReActiveShrieker implements Listener
         Block block = event.getClickedBlock();
         if (block == null || block.getType() != Material.SCULK_SHRIEKER) return;
 
-        ItemStack item = event.getItem();
+        ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
         if (item == null || item.getType() != CONSUME_ITEM) return;
 
         if (event.getPlayer().getGameMode() == GameMode.SPECTATOR) return;
         if (!(block.getBlockData() instanceof SculkShrieker shriekerData)) return;
 
-        if (shriekerData.isCanSummon()) return;
+        Player player = event.getPlayer();
+
+        if (shriekerData.isCanSummon())
+        {
+            player.sendMessage(ChatColor.RED + "すでに有効化されています！");
+            return;
+        }
 
         if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
             item.setAmount(item.getAmount() - 1);
         }
-
-        event.getPlayer().swingMainHand();
 
         shriekerData.setCanSummon(true);
         block.setBlockData(shriekerData);
@@ -58,6 +61,8 @@ public class FeatureReActiveShrieker implements Listener
                 20,
                 0.2, 0.2, 0.2, 0.05
         );
+
+        player.sendMessage(ChatColor.GREEN + "スカルクシュリーカーを有効化しました！");
 
         event.setCancelled(true);
     }
